@@ -9,7 +9,7 @@ def load_ecg(record_name):
     """
 
     # read file
-    path_to_folder = "afdb/"
+    path_to_folder = "../afdb/"
     record = wfdb.rdrecord(f"{path_to_folder}{record_name}")  #ECG record
     annotation = wfdb.rdann(f"{path_to_folder}{record_name}", "atr")  #ECG annotations, used to find RR intervals
 

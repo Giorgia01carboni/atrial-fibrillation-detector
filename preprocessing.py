@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.ndimage import median_filter
 
-def median_filter(rr_intervals):
+def my_median_filter(rr_intervals):
     """
     3-point median filter r_m(n) = median{r(n-1),r(n),r(n+1)}
     :return: rr intervals without ectopic beats
@@ -26,8 +26,7 @@ def exponential_averager(rr_intervals, alpha):
     ema_rr = np.zeros(len(rr_intervals))
     ema_rr[0] = rt_previous
 
-    for n, val in enumerate(rr_intervals, start=1):
-        ema_rr[n] = rt_previous + alpha * (val - rt_previous)
+    for n in range(1, len(rr_intervals)):
+        ema_rr[n] = rt_previous + alpha * (rr_intervals[n] - rt_previous)
         rt_previous = ema_rr[n]
-
     return ema_rr
