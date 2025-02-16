@@ -20,7 +20,6 @@ def bigeminy_irregularity(rr_intervals, filtered_rr, N):
         filtered_rr_sum = sum(filtered_rr_window)
         b_n = ((filtered_rr_sum / rr_sum) - 1) ** 2
         bigeminy_list.append(b_n)
-
     return bigeminy_list
 
 
@@ -35,7 +34,7 @@ def bigeminy_exponential_averager(bigeminy_list, alpha):
     """
 
     b_n_prev = bigeminy_list[0]
-    ema_b_n = np.zeros(len(bigeminy_list))
+    ema_b_n = np.zeros(len(bigeminy_list)) #exponential moving average on b_n
     ema_b_n[0] = b_n_prev
 
     for n, val in enumerate(bigeminy_list[1:], start=1):

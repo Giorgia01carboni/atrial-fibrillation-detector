@@ -37,15 +37,12 @@ def rr_irregularities(m_normalized_list, ema_rr, alpha):
     :return: I_t(n). Output is close to 0 for regular rhythms and approaches 1 during AF.
     """
 
-    mnt_prev = m_normalized_list[0]
     # Exponential Moving Average of M(n)
     ema_mn = np.zeros(len(m_normalized_list))
-    ema_mn[0] = mnt_prev
+    ema_mn[0] = m_normalized_list[0]
 
     for n in range(1, len(m_normalized_list)):
-        ema_mn[n] = mnt_prev + alpha * (m_normalized_list[n] - mnt_prev)
-        mnt_prev = ema_mn[n]
-    print(f"ema_mn shape: {ema_mn.shape}, ema_rr shape: {np.array(ema_rr).shape}")
+        ema_mn[n] = ema_mn[n-1] + alpha * (m_normalized_list[n] - ema_mn[n-1])
 
     # Se le lunghezze non coincidono, tronchiamo il più lungo
     min_length = min(len(ema_mn), len(ema_rr))

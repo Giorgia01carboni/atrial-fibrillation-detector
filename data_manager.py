@@ -1,15 +1,16 @@
 import wfdb
 import numpy as np
 
+
 def load_ecg(record_name):
 
     """
         Using data from MIT-BIH AFDB
-        Returns: ecg signal, RR intervals, sampling frequency
+        Returns: ecg signal, RR intervals, sampling frequency, true labels from annotations
     """
 
     # read file
-    path_to_folder = "../afdb/"
+    path_to_folder = "/Users/jo/Documents/UNIMI/Biomedical Signal Processing/Final Project/afdb/"
     record = wfdb.rdrecord(f"{path_to_folder}{record_name}")  #ECG record
     annotation = wfdb.rdann(f"{path_to_folder}{record_name}", "atr")  #ECG annotations, used to find RR intervals
 
@@ -18,6 +19,9 @@ def load_ecg(record_name):
     fs = record.fs
 
     # RR intervals
-    rr_intervals = np.diff(annotation.sample / fs) # In seconds
+    rr_intervals = np.diff(annotation.sample) / fs  # In seconds
 
-    return signal, fs, rr_intervals
+    # Ground truth from actual annotations (used to check my results against this)
+    ground_truth = np.array([1 if "AFIB" in label else 0 for label in annotation.aux_note])
+
+    return signal, fs, rr_intervals, ground_truth
