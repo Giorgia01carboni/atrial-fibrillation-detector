@@ -16,11 +16,8 @@ AUC = Area Under Curve, area under the ROC curve. If AUC close to 1 => model is 
 """
 
 
-def performance(ground_truth, decisions_binary):
-    if len(ground_truth) != len(decisions_binary):
-        min_length = min(len(ground_truth), len(decisions_binary))
-        ground_truth = ground_truth[:min_length]
-        decisions_binary = decisions_binary[:min_length]
+def performance(ground_truth, decisions_binary, window_size=8):
+    ground_truth = ground_truth[window_size:]
 
     tn, fp, fn, tp = confusion_matrix(ground_truth, decisions_binary).ravel()
 
@@ -43,7 +40,6 @@ def plot_roc_auc(ground_truth, decisions):
 
     roc_auc = auc(fpr, tpr)
 
-    # Plot della ROC Curve
     plt.figure(figsize=(8, 6))
     plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
     plt.plot([0, 1], [0, 1], color='gray', linestyle='--')  # Random guess

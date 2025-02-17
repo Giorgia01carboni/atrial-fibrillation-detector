@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def decision_func(i_t, b_t, delta):
     """
     Compute the decision output. Distinguish between AF and Bigeminy's.

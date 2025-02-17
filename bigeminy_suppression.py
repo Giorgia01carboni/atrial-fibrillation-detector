@@ -1,9 +1,10 @@
 import numpy as np
 
+
 def bigeminy_irregularity(rr_intervals, filtered_rr, N):
     """
     B(n) measures RR irregularity while being indifferent to Bigeminy.
-    Slide a window of length N (for both the original RR intervals array and the filtered RR interval array
+    Slide a window of length N (for both the original RR intervals array and the filtered RR interval array)
     and sum the values inside the window. Divide
     :param rr_intervals: Array of RR-intervals (in seconds).
     :param filtered_rr: rr intervals without ectopic beat (check preprocessing.py)
@@ -34,7 +35,7 @@ def bigeminy_exponential_averager(bigeminy_list, alpha):
     """
 
     b_n_prev = bigeminy_list[0]
-    ema_b_n = np.zeros(len(bigeminy_list)) #exponential moving average on b_n
+    ema_b_n = np.zeros(len(bigeminy_list))  #exponential moving average on b_n
     ema_b_n[0] = b_n_prev
 
     for n, val in enumerate(bigeminy_list[1:], start=1):

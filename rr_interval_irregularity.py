@@ -44,7 +44,6 @@ def rr_irregularities(m_normalized_list, ema_rr, alpha):
     for n in range(1, len(m_normalized_list)):
         ema_mn[n] = ema_mn[n-1] + alpha * (m_normalized_list[n] - ema_mn[n-1])
 
-    # Se le lunghezze non coincidono, tronchiamo il più lungo
     min_length = min(len(ema_mn), len(ema_rr))
     ema_mn = ema_mn[:min_length]
     ema_rr = ema_rr[:min_length]

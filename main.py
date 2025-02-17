@@ -17,7 +17,7 @@ def main():
 
     N = 8
     gamma = 0.03
-    delta = 2e-6
+    delta = 2e-4
     alpha = 0.03
     eta = 0.00035
 
@@ -44,24 +44,20 @@ def main():
     specificities = []
     accuracies = []
 
-    new_recs = ["04015", "04048", "04126", "04746", "05261", "06426", "06453", "06995", "07910"]
-    for record_name in new_recs:
+    for record_name in ecg_records:
         signal, fs, rr_intervals, ground_truth = data_manager.load_ecg(record_name)
 
+        # if record is shorter than window's length N, skip.
         if len(rr_intervals) < 8:
-            print(f"Record {record_name} is too short. Skipping...")
-            continue  # Skip this iteration and go to the next record
-        print(f"Length of ground_truth: {len(ground_truth)}")
+            continue
+
         ### dataset preprocessing
         filtered_rr = preprocessing.my_median_filter(rr_intervals)
-        print(f"Length of filtered_rr: {len(filtered_rr)}")
         ema_rr = preprocessing.exponential_averager(filtered_rr, alpha)
-        print(f"Length of exponential moving averager on r: {len(ema_rr)}")
         linear_filtered_rr = preprocessing.my_forward_backward_filtering(ema_rr, alpha)
-        print(f"Length of forward-backward filtering: {len(linear_filtered_rr)}")
+
         ### irregularities in the RR intervals
         m_normalized = rr_interval_irregularity.M_normalized(filtered_rr, N, gamma)
-        print(f"Length of m_n normalized: {len(m_normalized)}")
         i_t = rr_interval_irregularity.rr_irregularities(m_normalized, linear_filtered_rr, alpha)
 
         ### Bigeminy's suppression
@@ -70,7 +66,7 @@ def main():
 
         ### signal fusion and detection
         decisions = detector.decision_func(i_t, b_t, delta)
-        decisions_binary = detector.ground_truth_decision(decisions, eta)
+        decisions_binary = detector.ground_truth_decision(decisions, eta) #predicted labels
 
         ### Model's performance
         se, sp, acc = metrics.performance(ground_truth, decisions_binary)
@@ -79,10 +75,14 @@ def main():
         accuracies.append(acc)
         true_labels.append(ground_truth)
         predicted_labels.append(decisions_binary)
-
+        print(f"Record {record_name}:")
+        print(f"Specificity: {sp}")
+        print(f"Sensitivity: {se}")
+        print(f"Accuracy: {acc}")
+        print("---------------------")
     true_labels = np.concatenate(true_labels)
     predicted_labels = np.concatenate(predicted_labels)
-
+    print("\n")
 
     avg_sensitivity = np.mean(sensitivities)
     avg_specificity = np.mean(specificities)
@@ -92,7 +92,6 @@ def main():
     print(f"Average Sensitivity: {avg_sensitivity}")
     print(f"Average Specificity: {avg_specificity}")
     print(f"Average Accuracy: {avg_accuracy}")
-
 
 
 if __name__ == "__main__":
